@@ -17,8 +17,10 @@ COPY requirements.txt .
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
-RUN pip install --upgrade pip \
- && pip install --no-cache-dir -r requirements.txt
+# Instala dependências
+RUN pip install --no-cache-dir --upgrade pip wheel "setuptools<81" \
+ && pip install --no-cache-dir -r requirements.txt \
+ && python -c "import pkg_resources; print('pkg_resources ok')"
 
 
 # =========================
@@ -32,14 +34,14 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PATH="/opt/venv/bin:$PATH"
 
-# 🔑 Dependência runtime do PostgreSQL (libpq)
+# Dependência runtime do PostgreSQL
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq5 \
  && rm -rf /var/lib/apt/lists/*
 
 COPY --from=builder /opt/venv /opt/venv
 COPY app.py .
+
 EXPOSE ${PORT}
 
 CMD ["sh", "-c", ": \"${PORT:?PORT environment variable is required}\" && python app.py --port ${PORT}"]
-

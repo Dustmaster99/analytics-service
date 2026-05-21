@@ -10,5 +10,5 @@ opentelemetry-instrumentation==0.48b0
 opentelemetry-instrumentation-flask==0.48b0
 opentelemetry-instrumentation-requests==0.48b0
 opentelemetry-instrumentation-botocore==0.48b0
-setuptools>=70.0.0
+setuptools<81
 
